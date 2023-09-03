@@ -98,11 +98,12 @@ yc compute instance create \
   --metadata-from-file user-data=cloudconfig-metadata.yaml
   
 ```
-====================
-Домашнее задание №5:
-====================
 
-## В процессе сделано:
+# Выполнено ДЗ №5
+
+## Основное ДЗ
+
+# В процессе сделано:
  
     Установлен и настроен Packer
     Создан сервисный аккаунт
@@ -114,6 +115,7 @@ yc compute instance create \
     Создал скрипт  для создания VM config-scripts/create-reddit-vm.sh
 
  Созданные образы:
+```
 > yc compute image list
 +----------------------+------------------------+-------------+----------------------+--------+
 |          ID          |          NAME          |   FAMILY    |     PRODUCT IDS      | STATUS |
@@ -121,4 +123,4 @@ yc compute instance create \
 | fd89d1psr2l0rh8rcsi1 | reddit-base-09-03-2023 | reddit-base | f2entqq6l8h6pr5irof0 | READY  |
 | fd8cbesgcg5s4i5co53r | reddit-full-09-03-2023 | reddit-full | f2entqq6l8h6pr5irof0 | READY  |
 +----------------------+------------------------+-------------+----------------------+--------+
-
+```
