@@ -1,3 +1,9 @@
 variables.pkr.hcl
 variables.json.hcl
 variables.json
+*.tfstate
+*.tfstate.*.backup
+*.tfstate.backup
+*.tfvars
+.terraform/
+.terraform.lock.hcl
