@@ -1,0 +1,50 @@
+variable "source_image_family" {
+    type = string
+    default = "ubuntu-1604-lts"
+}
+
+variable "service_account_key_file" {
+    type = string
+    default = "/home/swenum/key_yandex.json"
+}
+
+variable "image-id {
+    type = string
+    default = "xxxxxxx"
+}
+
+variable "folder_id" {
+    type = string
+    default = "xxxxxxxxxxxxxx"
+}
+
+
+variable "image_family" {
+    type = string
+    default = "reddit-base"
+}
+
+variable "ssh_username" {
+    type = string
+    default = "ubuntu"
+}
+
+variable "platform_id" {
+    type = string
+    default = "standard-v1"
+}
+
+variable "use_ipv4_nat" {
+    type = string
+    default = "true"
+}
+
+variable "zone" {
+    type = string
+    default = "ru-central1-a"
+}
+
+
+locals {
+    name = "reddit-base-2-${formatdate("MM-DD-YYYY", timestamp())}"
+}
