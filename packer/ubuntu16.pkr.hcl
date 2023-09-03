@@ -1,7 +1,7 @@
 
 
 source "yandex" "ubuntu16" {
-  
+
   service_account_key_file =  "/home/swenum/key_yandex.json"
   folder_id = "${var.folder_id}"
   source_image_family = "${var.source_image_family}"
@@ -14,7 +14,7 @@ source "yandex" "ubuntu16" {
 
 build {
   sources = ["source.yandex.ubuntu16"]
-  
+
   provisioner "shell" {
         inline = [
             "echo Waiting for apt-get to finish...",
