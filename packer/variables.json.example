@@ -1,7 +1,7 @@
 {
     "folder_id": "xxxxxxx",
     "source_image_family": "ubuntu-1604-lts",
-    "service_account_key_file": "/home/swenum/key_yandex.json",
+    "service_account_key_file": "key.json.example",
     "zone": "ru-central1-a",
     "use_ipv4_nat": "true"
 }
