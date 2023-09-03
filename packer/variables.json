@@ -1,6 +1,0 @@
-{
-    "service_account_key_file": "/home/swenum/key_yandex.json",
-    "folder_id": "b1gvj6fqqjq8dskoa93o",
-    "source_image_family": "ubuntu-1604-lts",
-    "ssh_username": "ubuntu"
-}
