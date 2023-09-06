@@ -55,7 +55,7 @@ testapp_port = 9292
 - Скрипт `reddit.sh` содержит команду для автоматического развертывания с использованием cloud-config файла `cloudconfig-metadata.yaml`.
 
 #### Дополнительное задание
-Создан cloudconfig для автоматизации деплоя приложения Monolith Reddit при помощи Cloud-init. Пример файла `cloudconfig-metadata.yaml` ниже. 
+Создан cloudconfig для автоматизации деплоя приложения Monolith Reddit при помощи Cloud-init. Пример файла `cloudconfig-metadata.yaml` ниже.
 
 ```
 #cloud-config
@@ -75,7 +75,7 @@ packages:
   - mongodb
   - ruby-full
   - ruby-bundler
-  
+
 runcmd:
   - systemctl start mongodb
   - systemctl enable mongodb
@@ -96,5 +96,31 @@ yc compute instance create \
   --network-interface subnet-name=otus-network-ru-central1-a,nat-ip-version=ipv4 \
   --metadata serial-port-enable=1 \
   --metadata-from-file user-data=cloudconfig-metadata.yaml
-  
+
+```
+
+# Выполнено ДЗ №5
+
+## Основное ДЗ
+
+# В процессе сделано:
+
+    Установлен и настроен Packer
+    Создан сервисный аккаунт
+    Созданы pkr.hcl & json конфигурационные файлы
+    Созданы файлы для переменных
+    Добавлены в .gitignore
+    Подготовил  шаблоны для создания образов Fry и Bake
+    Создал образы и проверил их работу
+    Создал скрипт  для создания VM config-scripts/create-reddit-vm.sh
+
+ Созданные образы:
+```
+> yc compute image list
++----------------------+------------------------+-------------+----------------------+--------+
+|          ID          |          NAME          |   FAMILY    |     PRODUCT IDS      | STATUS |
++----------------------+------------------------+-------------+----------------------+--------+
+| fd89d1psr2l0rh8rcsi1 | reddit-base-09-03-2023 | reddit-base | f2entqq6l8h6pr5irof0 | READY  |
+| fd8cbesgcg5s4i5co53r | reddit-full-09-03-2023 | reddit-full | f2entqq6l8h6pr5irof0 | READY  |
++----------------------+------------------------+-------------+----------------------+--------+
 ```
