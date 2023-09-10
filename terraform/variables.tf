@@ -30,3 +30,7 @@ variable "app_count" {
   description = "Number of app instances"
   default     = 1
 }
+variable "token_yc" {
+  description = "Token for Yandex Cloud"
+
+}

@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "yandex" {
-  token     = "t1.9euelZqZlJHKjZeLjs2RlpiPjZiQnu3rnpWai5CJzZnLyMqSjo6Ljp2Ry43l8_dCbSxY-e8VTC5e_N3z9wIcKlj57xVMLl78zef1656Vmo_JkZyJip7Pm5WKi5XMypqO7_zN5_XrnpWaj8yZnMjOk5qMi4mXjJeakovv_cXrnpWaj8mRnImKns-blYqLlczKmo4.XHBgKnfNyuUIJQP-RxRbAV_1xR6oUUQrpF-tTsjytxtb6lAqOdq0ehEEaF3J-YcQzpXZ1wcX-mRrowPHR5PLAQ"
+  token     = var.token_yc
   cloud_id  = var.cloud_id
   folder_id = var.folder_id
   zone      = var.zone
@@ -27,9 +27,8 @@ resource "yandex_compute_instance" "app" {
     }
   }
   network_interface {
-    # Указан id подсети default-ru-central1-a
-    subnet_id = var.subnet_id
-    nat       = true
+    subnet_id = yandex_vpc_subnet.app-subnet.id
+    nat = true
   }
   metadata = {
     ssh-keys = "ubuntu:${file(var.public_key_path)}"
@@ -42,11 +41,30 @@ resource "yandex_compute_instance" "app" {
     # путь до приватного ключа
     private_key = "${file(var.private_key_path)}"
   }
+
   provisioner "file" {
     source      = "files/puma.service"
     destination = "/tmp/puma.service"
   }
   provisioner "remote-exec" {
+        inline = [
+            "echo Waiting for apt-get to finish...",
+            "a=1; while [ -n \"$(pgrep apt-get)\" ]; do echo $a; sleep 1s; a=$(expr $a + 1); done",
+            "echo Done."
+        ]
+  }
+  provisioner "remote-exec" {
     script = "files/deploy.sh"
   }
+}
+resource "yandex_vpc_network" "app-network" {
+  name = "reddit-app-network"
+}
+
+
+resource "yandex_vpc_subnet" "app-subnet" {
+  name           = "reddit-app-subnet"
+  zone           = "ru-central1-a"
+  network_id     = "${yandex_vpc_network.app-network.id}"
+  v4_cidr_blocks = ["192.168.10.0/24"]
 }
