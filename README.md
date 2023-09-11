@@ -200,4 +200,4 @@ terraform/stage> terraform apply
     9. Создаем playbook clone.yml для клонирования git-репозитория
     10. Запускаем ansible-playbook clone.yml и фактически клонирование не происходит, поскольку код уже находиться в указанном месте.
     11. Выполняем ansible app -m command -a 'rm -rf ~/reddit'; ansible-playbook clone.yml которое теперь приводит к клонированию.
-    12. Написал output.tf создание динамического инвентори  в  формате для ansible
+    12. Написал output.tf создание динамического инвентори  в  формате yml для ansible
