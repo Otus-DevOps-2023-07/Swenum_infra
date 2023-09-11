@@ -24,11 +24,26 @@ resource "yandex_compute_instance" "app" {
   }
 
   network_interface {
-    subnet_id       = var.subnet_id
-    nat = true
+    subnet_id = var.subnet_id
+    nat       = true
   }
 
   metadata = {
-  ssh-keys = "ubuntu:${file(var.public_key_path)}"
+    ssh-keys = "ubuntu:${file(var.public_key_path)}"
+  }
+  connection {
+    type        = "ssh"
+    host        = self.network_interface.0.nat_ip_address
+    user        = "ubuntu"
+    agent       = false
+    private_key = file(var.private_key_path)
+  }
+
+  provisioner "file" {
+    content     = templatefile("../modules/app/files/puma.service", { internal_ip_address_db = "${var.internal_ip_address_db}" })
+    destination = "/tmp/puma.service"
+  }
+  provisioner "remote-exec" {
+    script = "../modules/app/files/postinstall_app.sh"
   }
 }
