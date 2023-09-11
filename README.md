@@ -161,8 +161,8 @@ yc compute instance create \
 ## Как запустить проект:
 
 ``` bash
-	terraform/prod> terraform apply
-	terraform/stage> terraform apply
+terraform/prod> terraform apply
+terraform/stage> terraform apply
 ```
 ## Как проверить работоспособность:
 
