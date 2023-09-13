@@ -182,3 +182,22 @@ terraform/stage> terraform apply
   terraform init -backend-config="access_key=$ACCESS_KEY" -backend-config="secret_key=$SECRET_KEY" -reconfigure
   ```
 (**) Исправлены provisioner, исправлен конфигурационный файл базы данных и приложению передаёться ссылка на базу данных.
+
+
+# Выполнено Домашнее задание №8:
+
+## Основное ДЗ
+
+### В процессе сделано:
+    1. Создана ветка ansible-2
+    2. Поднимаем инфраструктуру при помощи  cd terraform/stage; terraform apply
+    3. Создаем статический ansible/inventory в формате ini
+    4. Проверяем ansible app -i ./inventory -m ping; ansible db -i ./inventory -m ping
+    5. Создаем ./ansible.cfg, переносим в него inventory, remote_user, private_key_file. Это позволяет убрать из статического inventory соответствующие поля.
+    6. Группируем хосты в inventory, можно использовать групповые комманды ansible app -m ping
+    7. Конвертируем inventory в yaml формат, проверяем ansible all -m ping -i inventory.yml
+    8. Проверяем работу и сравниваем поведение модулей ansible: command, shell, systemd, service, git
+    9. Создаем playbook clone.yml для клонирования git-репозитория
+    10. Запускаем ansible-playbook clone.yml и фактически клонирование не происходит, поскольку код уже находиться в указанном месте.
+    11. Выполняем ansible app -m command -a 'rm -rf ~/reddit'; ansible-playbook clone.yml которое теперь приводит к клонированию.
+    12. Написал output.tf создание динамического инвентори  в  формате yml для ansible

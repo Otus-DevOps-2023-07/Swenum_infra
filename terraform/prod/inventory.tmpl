@@ -1,0 +1,9 @@
+all:
+  hosts:
+      app:
+        ansible_host: ${ip_address_app}
+      db:
+        ansible_host: ${ip_address_db}
+  vars:
+    remote_user : appuser
+    private_key_file : /home/swenum/.ssh/otus2023
