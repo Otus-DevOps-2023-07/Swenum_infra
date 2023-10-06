@@ -33,7 +33,7 @@ resource "yandex_compute_instance" "db" {
     private_key = file(var.private_key_path)
   }
 
-  provisioner "remote-exec" {
-    script = "../modules/db/files/postinstall_db.sh"
-  }
+#  provisioner "remote-exec" {
+#    script = "../modules/db/files/postinstall_db.sh"
+#  }
 }

@@ -8,3 +8,4 @@ variables.json
 .terraform/
 .terraform.lock.hcl
 provider.tf
+*.retry
