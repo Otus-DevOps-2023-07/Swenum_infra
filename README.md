@@ -227,3 +227,10 @@ ansible-playbook site.yml
 ## Дополнительное ДЗ
 
 Инвентори генерируеться средствами terraform из шаблона
+Также установлен плагин для генерации динамического инвентори.
+
+cd ansible
+mkdir -p plugins/inventory
+curl https://raw.githubusercontent.com/st8f/community.general/yc_compute/plugins/inventory/yc_compute.py | \
+  sed -e 's/community\.general\.yc_compute/yc_compute/g' > plugins/inventory/yc_compute.py
+pip install yandexcloud

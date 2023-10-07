@@ -1,10 +1,10 @@
 all:
   hosts:
       app:
-        ansible_host: 158.160.122.72
+        ansible_host: 158.160.57.88
       db:
-        ansible_host: 158.160.113.149
+        ansible_host: 130.193.50.208
   vars:
     remote_user : appuser
     private_key_file : /home/swenum/.ssh/otus2023
-    internal_ip_db :  192.168.10.23
+    internal_ip_db :  192.168.10.19
