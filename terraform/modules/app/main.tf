@@ -32,11 +32,11 @@ resource "yandex_compute_instance" "app" {
     private_key = file(var.private_key_path)
   }
 
-  #provisioner "file" {
-  #  content     = templatefile("../modules/app/files/puma.service", { internal_ip_address_db = "${var.internal_ip_address_db}" })
-  #  destination = "/tmp/puma.service"
-  #}
-  #provisioner "remote-exec" {
-  #  script = "../modules/app/files/postinstall_app.sh"
-  #}
+  provisioner "file" {
+    content     = templatefile("../modules/app/files/puma.service", { internal_ip_address_db = "${var.internal_ip_address_db}" })
+    destination = "/tmp/puma.service"
+  }
+  provisioner "remote-exec" {
+    script = "../modules/app/files/postinstall_app.sh"
+  }
 }

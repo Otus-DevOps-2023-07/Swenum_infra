@@ -17,6 +17,7 @@ resource "local_file" "AnsibleInventory" {
    {
      ip_address_app = module.app.external_ip_address_app
      ip_address_db = module.db.external_ip_address_db
+     internal_ip_db = module.db.internal_ip_address_db
 
    }
  )
