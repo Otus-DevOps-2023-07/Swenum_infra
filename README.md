@@ -201,3 +201,36 @@ terraform/stage> terraform apply
     10. Запускаем ansible-playbook clone.yml и фактически клонирование не происходит, поскольку код уже находиться в указанном месте.
     11. Выполняем ansible app -m command -a 'rm -rf ~/reddit'; ansible-playbook clone.yml которое теперь приводит к клонированию.
     12. Написал output.tf создание динамического инвентори  в  формате yml для ansible
+
+
+# Выполнено Домашнее задание №9:
+
+## Основное ДЗ
+
+### В процессе сделано:
+
+    Были освоены handlers, templates, tags
+    Изучен подход один плейбук, один сценарий.
+    Изучен подход один плейбук, много сценариев.
+    Изучен подход несколько плейбуков.
+    Пересобраны packer образы и на их основе терраформом подняты инстансы.
+    На поднятых инстансах плэйбуком, включающим в себя другие, было развёрнута база и приложение.
+
+
+Как запустить проект:
+
+packer build -var-file=packer/variables.json packer/db.json
+packer build -var-file=packer/variables.json packer/app.json
+terraform apply
+ansible-playbook site.yml
+
+## Дополнительное ДЗ
+
+Инвентори генерируеться средствами terraform из шаблона
+Также установлен плагин для генерации динамического инвентори.
+
+cd ansible
+mkdir -p plugins/inventory
+curl https://raw.githubusercontent.com/st8f/community.general/yc_compute/plugins/inventory/yc_compute.py | \
+  sed -e 's/community\.general\.yc_compute/yc_compute/g' > plugins/inventory/yc_compute.py
+pip install yandexcloud

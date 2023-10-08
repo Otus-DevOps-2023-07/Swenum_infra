@@ -19,7 +19,7 @@ module "app" {
   app_disk_image         = var.app_disk_image
   subnet_id              = module.vpc.subnet_id
   private_key_path       = var.private_key_path
-  internal_ip_address_db = module.db.internal_ip_address_db.0
+  internal_ip_address_db = module.db.internal_ip_address_db
 }
 
 module "db" {
