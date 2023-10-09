@@ -7,9 +7,9 @@ provider "yandex" {
 
 module "vpc" {
   source         = "../modules/vpc"
-  subnet_name    = "app-subnet"
-  network_name   = "app-network"
-  v4_cidr_blocks = ["192.168.10.0/24"]
+  subnet_name    = "app-subnet-stage"
+  network_name   = "app-network-stage"
+  v4_cidr_blocks = ["192.168.11.0/24"]
 
 }
 

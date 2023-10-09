@@ -21,5 +21,5 @@ resource "local_file" "AnsibleInventory" {
 
    }
  )
-  filename = "../../ansible/inventory_stage.yml"
+  filename = "../../ansible/enviroments/stage/inventory.yml"
 }

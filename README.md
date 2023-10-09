@@ -234,3 +234,21 @@ mkdir -p plugins/inventory
 curl https://raw.githubusercontent.com/st8f/community.general/yc_compute/plugins/inventory/yc_compute.py | \
   sed -e 's/community\.general\.yc_compute/yc_compute/g' > plugins/inventory/yc_compute.py
 pip install yandexcloud
+
+```
+[defaults]
+# inventory = ./inventory_prod.yml
+# inventory = ./inventory_stage.yml
+# inventory = ./inventory_yc.yml
+inventory = inventory_yc.yml
+remote_user = appuser
+private_key_file = /home/swenum/.ssh/otus2023
+host_key_checking = False
+retry_files_enabled = False
+
+
+inventory_plugins=./plugins/inventory
+
+[inventory]
+enable_plugins = yc_compute
+```
