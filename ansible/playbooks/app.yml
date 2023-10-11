@@ -2,7 +2,5 @@
 - name: Configure App
   hosts: app
   become: true
-  vars:
-    db_host: "{{ internal_ip_db }}"
   roles:
     - app
