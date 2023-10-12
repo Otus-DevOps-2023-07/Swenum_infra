@@ -9,3 +9,4 @@ variables.json
 .terraform.lock.hcl
 provider.tf
 *.retry
+jdauphant.nginx

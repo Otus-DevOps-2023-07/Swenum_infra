@@ -1,1 +1,6 @@
 internal_ip_db: ${internal_ip_db}
+nginx_sites:
+  default:
+  - listen 80
+  - server_name "reddit"
+  - location / { proxy_pass http://127.0.0.1:9292; }

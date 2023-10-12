@@ -21,7 +21,7 @@ resource "local_file" "AnsibleInventory" {
 
    }
  )
-  filename = "../../ansible/enviroments/stage/inventory.yml"
+  filename = "../../ansible/environments/stage/inventory.yml"
 }
 ### The Ansible inventory file standard
 resource "local_file" "AnsibleInventory2" {
@@ -33,7 +33,7 @@ resource "local_file" "AnsibleInventory2" {
 
    }
  )
-  filename = "../../ansible/enviroments/stage/inventory"
+  filename = "../../ansible/environments/stage/inventory"
 }
 ### The Ansible inventory vars
 resource "local_file" "AnsibleInventoryVars" {
@@ -44,5 +44,5 @@ resource "local_file" "AnsibleInventoryVars" {
 
    }
  )
-  filename = "../../ansible/enviroments/stage/group_vars/app"
+  filename = "../../ansible/environments/stage/group_vars/app"
 }
