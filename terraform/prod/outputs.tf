@@ -24,5 +24,16 @@ resource "local_file" "AnsibleInventory" {
 
     }
   )
-  filename = "../../ansible/inventory_prod.yml"
+  filename = "../../ansible/environments/prod/inventory.yml"
+}
+### The Ansible inventory vars
+resource "local_file" "AnsibleInventoryVars" {
+  content = templatefile("app.tmpl",
+   {
+
+     internal_ip_db = module.db.internal_ip_address_db
+
+   }
+ )
+  filename = "../../ansible/environments/prod/group_vars/app"
 }

@@ -1,41 +1,180 @@
-# Выполнено ДЗ №3
+
+# Выполнено Домашнее задание №10:  Ansible роли, управление настройками нескольких окружений и best practices
 
 ## Основное ДЗ
 
-- Запускаем агент и добавляем в него свой ключ, подключаемся к удалённой машине через бастион
+### В процессе сделано:
 
-```bash
-ssh-add ~/.ssh/otus2023
-ssh -A -J appuser@130.193.48.215 appuser@10.128.0.33
+    Созданные плейбуки перенесены в раздельные роли;
+    Описаны два окружения prod и stage;
+    Использована коммьюнити роль jdauphant.nginx;
+    Для окружений используется Ansible Vault;
+    С целью реализации механизма группировки и переиспользования конфигурационного кода, с использованием команды ansible-galaxy созданы роли для приложения и базы данных  app и db;
+    Определены переменные групп хостов;
+    Заданы настройки окружений prod и stage с использованием групповых переменных;
+    Плейбуки в папке ansible организованы согласно best practices;
+    В файл ansible.cfg добавлен блок [diff];
+    Пересоздана terraform инфраструктура окружений stage и prod;
+    Проверка ролей и работа приложения выполнены успешно;
+    Использована community-роль jdauphant.nginx и настроено обратное проксирование для приложения с помощью nginx;
+
+## Дополнительное ДЗ
+
+   Задание со ⭐: Работа с динамическим инвентори реализовано посредством terraform outputs.
+
+   Задание с ⭐⭐: Настройка TravisCI недостаточно знаний получено.
+
+
+
+# Выполнено Домашнее задание №9: Продолжение знакомства с Ansible: templates, handlers, dynamic inventory, vault, tags
+
+## Основное ДЗ
+
+### В процессе сделано:
+
+    Были освоены handlers, templates, tags
+    Изучен подход один плейбук, один сценарий.
+    Изучен подход один плейбук, много сценариев.
+    Изучен подход несколько плейбуков.
+    Пересобраны packer образы и на их основе терраформом подняты инстансы.
+    На поднятых инстансах плэйбуком, включающим в себя другие, было развёрнута база и приложение.
+
+
+Как запустить проект:
+
+packer build -var-file=packer/variables.json packer/db.json
+packer build -var-file=packer/variables.json packer/app.json
+terraform apply
+ansible-playbook site.yml
+
+## Дополнительное ДЗ
+
+Инвентори генерируеться средствами terraform из шаблона
+Также установлен плагин для генерации динамического инвентори.
+
+cd ansible
+mkdir -p plugins/inventory
+curl https://raw.githubusercontent.com/st8f/community.general/yc_compute/plugins/inventory/yc_compute.py | \
+  sed -e 's/community\.general\.yc_compute/yc_compute/g' > plugins/inventory/yc_compute.py
+pip install yandexcloud
 
 ```
-- Упрощаем работу, добавляя алиасы для хостов
+[defaults]
+# inventory = ./inventory_prod.yml
+# inventory = ./inventory_stage.yml
+# inventory = ./inventory_yc.yml
+inventory = inventory_yc.yml
+remote_user = appuser
+private_key_file = /home/swenum/.ssh/otus2023
+host_key_checking = False
+retry_files_enabled = False
 
-# Add to ~/.ssh/config
+
+inventory_plugins=./plugins/inventory
+
+[inventory]
+enable_plugins = yc_compute
 ```
-### The Bastion Host
-Host bastion-yandex
-  HostName 130.193.48.215
-  User appuser
-  IdentityFile ~/.ssh/otus2023
-  ForwardAgent yes
+# Выполнено Домашнее задание №8:  Управление конфигурацией. Знакомство с Ansible
 
-### The Remote Host
-Host someinternalhost
-  HostName 10.128.0.33
-  User appuser
-  ProxyJump bastion-yandex
+## Основное ДЗ
 
+### В процессе сделано:
+    1. Создана ветка ansible-2
+    2. Поднимаем инфраструктуру при помощи  cd terraform/stage; terraform apply
+    3. Создаем статический ansible/inventory в формате ini
+    4. Проверяем ansible app -i ./inventory -m ping; ansible db -i ./inventory -m ping
+    5. Создаем ./ansible.cfg, переносим в него inventory, remote_user, private_key_file. Это позволяет убрать из статического inventory соответствующие поля.
+    6. Группируем хосты в inventory, можно использовать групповые комманды ansible app -m ping
+    7. Конвертируем inventory в yaml формат, проверяем ansible all -m ping -i inventory.yml
+    8. Проверяем работу и сравниваем поведение модулей ansible: command, shell, systemd, service, git
+    9. Создаем playbook clone.yml для клонирования git-репозитория
+    10. Запускаем ansible-playbook clone.yml и фактически клонирование не происходит, поскольку код уже находиться в указанном месте.
+    11. Выполняем ansible app -m command -a 'rm -rf ~/reddit'; ansible-playbook clone.yml которое теперь приводит к клонированию.
+    12. Написал output.tf создание динамического инвентори  в  формате yml для ansible
+
+# Выполнено Домашнее задание №7: Принципы организации инфраструктурного кода и работа над инфраструктурой в команде на примере Terraform
+
+## Основное ДЗ
+
+### В процессе сделано:
+    1. Создана ветка terraform-2
+    2. Сборка packer разбита на создание образа отдельно для базы данных и отдельно для приложения
+    3. Конфигурация terraform также разделена на отдельные файлы.
+    4. Изучены аттрибуты ресурсов и их использование
+    3. Перенос конфигурации в отдельные модули, создание отдельных окружений для prod и stage
+    4. Выполнена проверка доступности по ssh
+
+
+## Как запустить проект:
+
+``` bash
+terraform/prod> terraform apply
+terraform/stage> terraform apply
 ```
-- Создали и установили Впн сервер для Yandex.Cloud
+## Как проверить работоспособность:
 
-
-bastion_IP = 130.193.48.215
-someinternalhost_IP = 10.128.0.33
+	Например, перейти по ссылке http://158.160.33.208:9292/
 
 ## Дополнительное задание
 
-- Настроен ssl сертификат для панели упраления  Впн сервером.
+  (*) Настроено хранение файла состояния в s3 bucket
+  Инициализация:
+
+  ```bash
+  terraform init -backend-config="access_key=$ACCESS_KEY" -backend-config="secret_key=$SECRET_KEY"
+  ```
+  Если необходимо перенести файлы в другую папку:
+
+  ```bash
+  terraform init -backend-config="access_key=$ACCESS_KEY" -backend-config="secret_key=$SECRET_KEY" -reconfigure
+  ```
+(**) Исправлены provisioner, исправлен конфигурационный файл базы данных и приложению передаёться ссылка на базу данных.
+
+# Выполнено ДЗ №6:  Практика IaC с использованием Terraform
+
+## Основное ДЗ
+
+### В процессе сделано:
+
+- Установлен terraform
+- Настроено использование токена сервисного аккаунта
+- Создан основной файл main.tf и настроен удобный вывод ip виртуальных машин output.tf
+- Чувствительные данные вынесены  в файлы переменных
+- В .gitignore добавлены исключения
+
+
+## Дополнительное задание
+
+- Создан lb.tf для балансировщика и группы распределения
+- Внесены изменения в основной файл для учёта нескольких виртуальных машин и созданы новые переменные
+
+
+# Выполнено ДЗ №5  Сборка образов VM при помощи Packer
+
+## Основное ДЗ
+
+### В процессе сделано:
+
+    Установлен и настроен Packer
+    Создан сервисный аккаунт
+    Созданы pkr.hcl & json конфигурационные файлы
+    Созданы файлы для переменных
+    Добавлены в .gitignore
+    Подготовил  шаблоны для создания образов Fry и Bake
+    Создал образы и проверил их работу
+    Создал скрипт  для создания VM config-scripts/create-reddit-vm.sh
+
+ Созданные образы:
+```
+> yc compute image list
++----------------------+------------------------+-------------+----------------------+--------+
+|          ID          |          NAME          |   FAMILY    |     PRODUCT IDS      | STATUS |
++----------------------+------------------------+-------------+----------------------+--------+
+| fd89d1psr2l0rh8rcsi1 | reddit-base-09-03-2023 | reddit-base | f2entqq6l8h6pr5irof0 | READY  |
+| fd8cbesgcg5s4i5co53r | reddit-full-09-03-2023 | reddit-full | f2entqq6l8h6pr5irof0 | READY  |
++----------------------+------------------------+-------------+----------------------+--------+
+```
 
 # Выполнено ДЗ №4 Деплой тестового приложения
 
@@ -99,138 +238,41 @@ yc compute instance create \
 
 ```
 
-# Выполнено ДЗ №5
+# Выполнено ДЗ №3 Знакомство с облачной инфраструктурой Yandex.Cloud
 
 ## Основное ДЗ
 
-### В процессе сделано:
+- Запускаем агент и добавляем в него свой ключ, подключаемся к удалённой машине через бастион
 
-    Установлен и настроен Packer
-    Создан сервисный аккаунт
-    Созданы pkr.hcl & json конфигурационные файлы
-    Созданы файлы для переменных
-    Добавлены в .gitignore
-    Подготовил  шаблоны для создания образов Fry и Bake
-    Создал образы и проверил их работу
-    Создал скрипт  для создания VM config-scripts/create-reddit-vm.sh
+```bash
+ssh-add ~/.ssh/otus2023
+ssh -A -J appuser@130.193.48.215 appuser@10.128.0.33
 
- Созданные образы:
 ```
-> yc compute image list
-+----------------------+------------------------+-------------+----------------------+--------+
-|          ID          |          NAME          |   FAMILY    |     PRODUCT IDS      | STATUS |
-+----------------------+------------------------+-------------+----------------------+--------+
-| fd89d1psr2l0rh8rcsi1 | reddit-base-09-03-2023 | reddit-base | f2entqq6l8h6pr5irof0 | READY  |
-| fd8cbesgcg5s4i5co53r | reddit-full-09-03-2023 | reddit-full | f2entqq6l8h6pr5irof0 | READY  |
-+----------------------+------------------------+-------------+----------------------+--------+
+- Упрощаем работу, добавляя алиасы для хостов
+
+# Add to ~/.ssh/config
 ```
-# Выполнено ДЗ №6:
+### The Bastion Host
+Host bastion-yandex
+  HostName 130.193.48.215
+  User appuser
+  IdentityFile ~/.ssh/otus2023
+  ForwardAgent yes
 
-## Основное ДЗ
+### The Remote Host
+Host someinternalhost
+  HostName 10.128.0.33
+  User appuser
+  ProxyJump bastion-yandex
 
-### В процессе сделано:
+```
+- Создали и установили Впн сервер для Yandex.Cloud
 
-- Установлен terraform
-- Настроено использование токена сервисного аккаунта
-- Создан основной файл main.tf и настроен удобный вывод ip виртуальных машин output.tf
-- Чувствительные данные вынесены  в файлы переменных
-- В .gitignore добавлены исключения
 
+bastion_IP = 130.193.48.215
+someinternalhost_IP = 10.128.0.33
 
 ## Дополнительное задание
 
-- Создан lb.tf для балансировщика и группы распределения
-- Внесены изменения в основной файл для учёта нескольких виртуальных машин и созданы новые переменные
-
-
-
-
-# Выполнено Домашнее задание №7:
-
-## Основное ДЗ
-
-### В процессе сделано:
-    1. Создана ветка terraform-2
-    2. Сборка packer разбита на создание образа отдельно для базы данных и отдельно для приложения
-    3. Конфигурация terraform также разделена на отдельные файлы.
-    4. Изучены аттрибуты ресурсов и их использование
-    3. Перенос конфигурации в отдельные модули, создание отдельных окружений для prod и stage
-    4. Выполнена проверка доступности по ssh
-
-
-## Как запустить проект:
-
-``` bash
-terraform/prod> terraform apply
-terraform/stage> terraform apply
-```
-## Как проверить работоспособность:
-
-	Например, перейти по ссылке http://158.160.33.208:9292/
-
-## Дополнительное задание
-
-  (*) Настроено хранение файла состояния в s3 bucket
-  Инициализация:
-
-  ```bash
-  terraform init -backend-config="access_key=$ACCESS_KEY" -backend-config="secret_key=$SECRET_KEY"
-  ```
-  Если необходимо перенести файлы в другую папку:
-
-  ```bash
-  terraform init -backend-config="access_key=$ACCESS_KEY" -backend-config="secret_key=$SECRET_KEY" -reconfigure
-  ```
-(**) Исправлены provisioner, исправлен конфигурационный файл базы данных и приложению передаёться ссылка на базу данных.
-
-
-# Выполнено Домашнее задание №8:
-
-## Основное ДЗ
-
-### В процессе сделано:
-    1. Создана ветка ansible-2
-    2. Поднимаем инфраструктуру при помощи  cd terraform/stage; terraform apply
-    3. Создаем статический ansible/inventory в формате ini
-    4. Проверяем ansible app -i ./inventory -m ping; ansible db -i ./inventory -m ping
-    5. Создаем ./ansible.cfg, переносим в него inventory, remote_user, private_key_file. Это позволяет убрать из статического inventory соответствующие поля.
-    6. Группируем хосты в inventory, можно использовать групповые комманды ansible app -m ping
-    7. Конвертируем inventory в yaml формат, проверяем ansible all -m ping -i inventory.yml
-    8. Проверяем работу и сравниваем поведение модулей ansible: command, shell, systemd, service, git
-    9. Создаем playbook clone.yml для клонирования git-репозитория
-    10. Запускаем ansible-playbook clone.yml и фактически клонирование не происходит, поскольку код уже находиться в указанном месте.
-    11. Выполняем ansible app -m command -a 'rm -rf ~/reddit'; ansible-playbook clone.yml которое теперь приводит к клонированию.
-    12. Написал output.tf создание динамического инвентори  в  формате yml для ansible
-
-
-# Выполнено Домашнее задание №9:
-
-## Основное ДЗ
-
-### В процессе сделано:
-
-    Были освоены handlers, templates, tags
-    Изучен подход один плейбук, один сценарий.
-    Изучен подход один плейбук, много сценариев.
-    Изучен подход несколько плейбуков.
-    Пересобраны packer образы и на их основе терраформом подняты инстансы.
-    На поднятых инстансах плэйбуком, включающим в себя другие, было развёрнута база и приложение.
-
-
-Как запустить проект:
-
-packer build -var-file=packer/variables.json packer/db.json
-packer build -var-file=packer/variables.json packer/app.json
-terraform apply
-ansible-playbook site.yml
-
-## Дополнительное ДЗ
-
-Инвентори генерируеться средствами terraform из шаблона
-Также установлен плагин для генерации динамического инвентори.
-
-cd ansible
-mkdir -p plugins/inventory
-curl https://raw.githubusercontent.com/st8f/community.general/yc_compute/plugins/inventory/yc_compute.py | \
-  sed -e 's/community\.general\.yc_compute/yc_compute/g' > plugins/inventory/yc_compute.py
-pip install yandexcloud
+- Настроен ssl сертификат для панели упраления  Впн сервером.
