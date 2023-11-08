@@ -1,44 +1,9 @@
 ---
 # tasks file for app
+
 - name: Show info about the env this host belongs to
   debug:
     msg: "This host is in {{ env }} environment!!!"
 
-- name: Install soft
-  ansible.builtin.package:
-    name: git
-    state: present
-
-- name: Add unit file for Puma
-  copy:
-    src: puma.service
-    dest: /etc/systemd/system/puma.service
-
-- name: reload systemd
-  command: systemctl daemon-reload
-
-- name: Add config for DB connection
-  template:
-    src:  db_config.j2
-    dest: /home/appuser/db_config
-    owner: appuser
-    group: appuser
-
-- name: Fetch the latest version of application code
-  become: true
-  git:
-    repo: 'https://github.com/express42/reddit.git'
-    dest: /home/appuser/reddit
-    version: monolith
-
-
-- name: bundle install
-  bundler:
-    state: present
-    chdir: /home/appuser/reddit
-
-- name: enable puma
-  systemd:
-    name : puma
-    enabled : true
-    state : started
+- include: ruby.yml
+- include: puma.yml
