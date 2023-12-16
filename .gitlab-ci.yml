@@ -17,7 +17,7 @@ build_job:
     name: branch/${CI_COMMIT_REF_NAME}
   script:
     - echo 'Building'
-    - echo '${CI_ENVIRONMENT_SLUG}'
+    - echo ${CI_ENVIRONMENT_SLUG}
     - docker build -t reddit:${CI_ENVIRONMENT_SLUG} docker-monolith/
     - docker rm -f reddit-${CI_ENVIRONMENT_SLUG}
     - docker run --name reddit-${CI_ENVIRONMENT_SLUG} --publish-all --detach reddit:${CI_ENVIRONMENT_SLUG}
