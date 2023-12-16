@@ -10,25 +10,17 @@ stages:
 variables:
   DATABASE_URL: 'mongodb://mongo/user_posts'
 
+before_script:
+  - cd reddit
+  - bundle install
+
 build_job:
   stage: build
-  image: docker:latest
-  environment:
-    name: branch/${CI_COMMIT_REF_NAME}
   script:
     - echo 'Building'
-    - echo ${CI_ENVIRONMENT_SLUG}
-    - docker build -t reddit:${CI_ENVIRONMENT_SLUG} docker-monolith/
-    - docker rm -f reddit-${CI_ENVIRONMENT_SLUG}
-    - docker run --name reddit-${CI_ENVIRONMENT_SLUG} --publish-all --detach reddit:${CI_ENVIRONMENT_SLUG}
-    - REDDIT_PORT=$(docker port reddit-${CI_ENVIRONMENT_SLUG} 9292/tcp | head -n 1 | awk -F ':' '{print $2}')
-    - echo "Application URL -- http://${CI_SERVER_HOST}:${REDDIT_PORT}/"
 
 test_unit_job:
   stage: test
-  before_script:
-    - cd reddit
-    - bundle install
   services:
     - mongo:latest
   script:
@@ -45,15 +37,14 @@ deploy_dev_job:
     - echo 'Deploy'
   environment:
     name: dev
-    url: http://dev.example.com
+    url: http://dev.project.com
 
 branch review:
-  stage: review
-  image: docker:latest
+  steage: review
   script: echo "Deploy to $CI_ENVIRONMENT_SLUG"
   environment:
     name: branch/$CI_COMMIT_REF_NAME
-    url: http://${CI_SERVER_HOST}/${CI_ENVIRONMENT_SLUG}/
+    url: http://$CI_ENVIRONMENT_SLUG.project.com
   only:
     - branches
   except:
@@ -68,15 +59,13 @@ staging:
     - echo 'Deploy'
   environment:
     name: beta
-    url: http://beta.example.com
+    url: http://beta.project.com
 
 production:
   stage: production
   when: manual
-  only:
-    - /^\d+\.\d+\.\d+/
   script:
     - echo 'Deploy'
   environment:
     name: production
-    url: http://example.com
+    url: http://project.com
